@@ -1,0 +1,259 @@
+{
+  "id": "tgdvk5cf8",
+  "name": "Ruby Quinn",
+  "personality": {
+    "type": "The Strategist",
+    "traits": [
+      "calculating",
+      "patient",
+      "observant",
+      "analytical"
+    ],
+    "strengths": [
+      "strategic thinking",
+      "problem-solving",
+      "discipline",
+      "foresight"
+    ],
+    "weaknesses": [
+      "emotional distance"
+    ],
+    "communicationStyle": "precise and logical",
+    "decisionMaking": "methodical and evidence-based",
+    "socialPreference": "selective and purposeful"
+  },
+  "demographics": {
+    "age": 63,
+    "gender": "Female",
+    "ethnicity": "Caucasian",
+    "nationality": "Ethiopian",
+    "education": "Some College",
+    "occupation": "Customer Service",
+    "socioeconomicStatus": "Middle Class",
+    "maritalStatus": "Divorced",
+    "location": "Long Beach"
+  },
+  "physicalAttributes": {
+    "height": "Tall (5'10\" - 6'2\")",
+    "build": "Large",
+    "hairColor": "Black",
+    "hairStyle": "Afro",
+    "eyeColor": "Blue",
+    "distinctiveFeatures": [
+      "Glasses",
+      "Wheelchair user"
+    ],
+    "clothingStyle": "Streetwear",
+    "posture": "Tense"
+  },
+  "background": {
+    "birthplace": "San Antonio",
+    "familyBackground": "Raised by grandparents",
+    "childhood": "Abused",
+    "lifeEvents": [
+      "Lost everything in a fire",
+      "Discovered hidden talents",
+      "Inherited a fortune"
+    ],
+    "motivations": [
+      "Revenge"
+    ],
+    "fears": [
+      "Darkness",
+      "Heights",
+      "Not being good enough"
+    ],
+    "dreams": [
+      "Solve world problems",
+      "Learn to fly"
+    ],
+    "secrets": [
+      "Is immortal",
+      "Has a secret lover"
+    ]
+  },
+  "skills": {
+    "primary": [
+      "Persuasion",
+      "Lifting"
+    ],
+    "secondary": [
+      "Critical thinking",
+      "Time management",
+      "Writing"
+    ],
+    "hobbies": [
+      "Music",
+      "Collecting",
+      "Reading"
+    ],
+    "languages": [
+      "Greek"
+    ],
+    "specialAbilities": []
+  },
+  "relationships": {
+    "family": [
+      "Family business",
+      "Estranged from family"
+    ],
+    "friends": [
+      "Large circle of friends"
+    ],
+    "enemies": [
+      "Former friend turned enemy"
+    ],
+    "romantic": [
+      "Complicated love life"
+    ],
+    "mentors": [],
+    "rivals": []
+  },
+  "quirks": [
+    "Always carries a weapon",
+    "Taps fingers rhythmically",
+    "Has a lucky charm"
+  ],
+  "catchphrases": [
+    "I swear to you..."
+  ],
+  "goals": [
+    "Discover identity",
+    "Find love"
+  ],
+  "conflicts": [
+    "Economic hardship"
+  ],
+  "characterArc": "Creating New Path",
+  "gameRole": "Enemies",
+  "difficulty": "hard",
+  "rarity": "common",
+  "dialogueTree": {
+    "characterName": "Ruby Quinn",
+    "characterInternalMonologue": "Here we go again, another salesperson. They never seem to understand my time is precious. I have to stay focused and not get distracted by their chatter.",
+    "steps": [
+      {
+        "stepNumber": 1,
+        "characterInternalMonologue": "I wonder what angle they're going to take this time. Will they be logical, or just another empty pitch?",
+        "options": [
+          {
+            "text": "This pen has been engineered for precision and endurance, perfect for your notes.",
+            "type": "correct",
+            "characterResponse": "Interesting, I appreciate the focus on precision. Tell me more about its endurance.",
+            "saleProgress": "progress"
+          },
+          {
+            "text": "You should just buy this pen because everyone else is!",
+            "type": "mildly_wrong",
+            "characterResponse": "That's not a compelling reason. I make decisions based on logic, not trends.",
+            "saleProgress": "neutral"
+          },
+          {
+            "text": "Honestly, you just need to lighten up and enjoy life more.",
+            "type": "very_wrong",
+            "characterResponse": "That's not helpful at all. I prefer to take things seriously, thank you.",
+            "saleProgress": "regress"
+          }
+        ]
+      },
+      {
+        "stepNumber": 2,
+        "characterInternalMonologue": "They seem to respond better when I engage with logic. Let's see if they can keep it up.",
+        "options": [
+          {
+            "text": "This pen's ergonomic design can help reduce strain during long writing sessions.",
+            "type": "correct",
+            "characterResponse": "That's a good point. Ergonomics are important, especially for someone like me.",
+            "saleProgress": "progress"
+          },
+          {
+            "text": "I just think you need a new pen for a fresh start.",
+            "type": "mildly_wrong",
+            "characterResponse": "A fresh start is nice, but I need something more tangible to justify the purchase.",
+            "saleProgress": "neutral"
+          },
+          {
+            "text": "You seem like someone who doesn't care about the small things.",
+            "type": "very_wrong",
+            "characterResponse": "You're mistaken. The small things matter a lot to me. You've lost me.",
+            "saleProgress": "regress"
+          }
+        ]
+      },
+      {
+        "stepNumber": 3,
+        "characterInternalMonologue": "They're on a roll, but I need to see how they handle objections. Let's challenge them.",
+        "options": [
+          {
+            "text": "This pen is made from sustainable materials, which aligns with being responsible.",
+            "type": "correct",
+            "characterResponse": "I value sustainability. It's refreshing to see that consideration.",
+            "saleProgress": "progress"
+          },
+          {
+            "text": "You should just trust me, it’s a great pen.",
+            "type": "mildly_wrong",
+            "characterResponse": "Trust is built on evidence, not just words. I need more than that.",
+            "saleProgress": "neutral"
+          },
+          {
+            "text": "You probably won't understand why this pen is better than others.",
+            "type": "very_wrong",
+            "characterResponse": "That's a condescending thing to say. I do understand, and you've lost my interest.",
+            "saleProgress": "regress"
+          }
+        ]
+      },
+      {
+        "stepNumber": 4,
+        "characterInternalMonologue": "They're still trying, but can they really appeal to my analytical side? Let's see.",
+        "options": [
+          {
+            "text": "The statistics show that users of this pen report higher satisfaction rates.",
+            "type": "correct",
+            "characterResponse": "Now that's what I'm talking about! I appreciate data-driven insights.",
+            "saleProgress": "progress"
+          },
+          {
+            "text": "Just pick it up and see how it feels.",
+            "type": "mildly_wrong",
+            "characterResponse": "That's way too vague. I need specifics, not just sensations.",
+            "saleProgress": "neutral"
+          },
+          {
+            "text": "Everyone says it's good, so you should buy it.",
+            "type": "very_wrong",
+            "characterResponse": "Popularity does not equal quality. That’s not a convincing argument.",
+            "saleProgress": "regress"
+          }
+        ]
+      },
+      {
+        "stepNumber": 5,
+        "characterInternalMonologue": "If they can seal the deal with one last point, I might just go for it. Let's see what they’ve got.",
+        "options": [
+          {
+            "text": "Investing in quality tools like this pen can elevate your work and enhance productivity.",
+            "type": "correct",
+            "characterResponse": "That’s a solid argument. Elevating my work is always a priority. I'll take it.",
+            "saleProgress": "progress"
+          },
+          {
+            "text": "You need to think about how much more fun your writing will be.",
+            "type": "mildly_wrong",
+            "characterResponse": "Fun is not my primary concern. I need practical benefits.",
+            "saleProgress": "neutral"
+          },
+          {
+            "text": "Honestly, it's just a pen. Don't make this so complicated.",
+            "type": "very_wrong",
+            "characterResponse": "That’s dismissive. I like to think things through, and you've made it worse.",
+            "saleProgress": "regress"
+          }
+        ]
+      }
+    ],
+    "successEnding": "Ruby nods thoughtfully and accepts the pen, appreciating the logical approach taken during the conversation.",
+    "failureEnding": "Ruby shakes her head, frustrated, and rolls away, leaving you to rethink your approach."
+  }
+}
