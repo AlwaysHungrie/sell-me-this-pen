@@ -1,7 +1,5 @@
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
-import { Character } from './types';
-import * as fs from 'fs';
-import * as path from 'path';
+import { DetailedCharacter } from '../types';
 import * as crypto from 'crypto';
 
 export class S3Service {
@@ -63,7 +61,6 @@ export class S3Service {
    */
   async uploadImage(imageUrl: string, characterName: string): Promise<string> {
     try {
-      console.log('📥 Downloading image from OpenAI...');
       const imageBuffer = await this.downloadImageFromUrl(imageUrl);
       
       const filename = this.generateUniqueFilename(
@@ -72,23 +69,19 @@ export class S3Service {
       );
       const s3Key = `images/${filename}`;
 
-      console.log('📤 Uploading image to S3...');
       const uploadCommand = new PutObjectCommand({
         Bucket: this.bucketName,
         Key: s3Key,
         Body: imageBuffer,
-        ContentType: 'image/png',
-        ACL: 'public-read'
+        ContentType: 'image/png'
       });
 
       await this.s3Client.send(uploadCommand);
 
       const publicUrl = `https://${this.bucketName}.s3.${this.region}.amazonaws.com/${s3Key}`;
-      console.log(`✅ Image uploaded successfully: ${publicUrl}`);
       
       return publicUrl;
     } catch (error) {
-      console.error('❌ Error uploading image to S3:', error);
       throw error;
     }
   }
@@ -96,7 +89,7 @@ export class S3Service {
   /**
    * Save character data to S3
    */
-  async saveCharacterData(character: Character): Promise<string> {
+  async saveCharacterData(character: DetailedCharacter): Promise<string> {
     try {
       const filename = this.generateUniqueFilename(
         this.sanitizeFilename(character.name),
@@ -104,23 +97,19 @@ export class S3Service {
       );
       const s3Key = `data/${filename}`;
 
-      console.log('📤 Uploading character data to S3...');
       const uploadCommand = new PutObjectCommand({
         Bucket: this.bucketName,
         Key: s3Key,
         Body: JSON.stringify(character, null, 2),
-        ContentType: 'application/json',
-        ACL: 'public-read'
+        ContentType: 'application/json'
       });
 
       await this.s3Client.send(uploadCommand);
 
       const publicUrl = `https://${this.bucketName}.s3.${this.region}.amazonaws.com/${s3Key}`;
-      console.log(`✅ Character data uploaded successfully: ${publicUrl}`);
       
       return publicUrl;
     } catch (error) {
-      console.error('❌ Error uploading character data to S3:', error);
       throw error;
     }
   }

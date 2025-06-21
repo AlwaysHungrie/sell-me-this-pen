@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
-import { Character } from './types';
-import { S3Service } from './S3Service';
+import { DetailedCharacter } from '../types';
+import { S3Service } from '../services/S3Service';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -22,7 +22,7 @@ export class ImageGenerator {
    * Generate a caricature image for a character and upload to S3
    * Uses optimized prompts to minimize API usage while maintaining quality
    */
-  async generateCharacterImage(character: Character): Promise<string> {
+  async generateCharacterImage(character: DetailedCharacter): Promise<string> {
     try {
       const prompt = this.buildOptimizedPrompt(character);
       
@@ -44,7 +44,6 @@ export class ImageGenerator {
       const s3ImageUrl = await this.s3Service.uploadImage(imageUrl, character.name);
       return s3ImageUrl;
     } catch (error) {
-      console.error('Error generating character image:', error);
       throw error;
     }
   }
@@ -53,7 +52,7 @@ export class ImageGenerator {
    * Build an optimized prompt that captures the character's essence
    * while minimizing token usage for cost efficiency
    */
-  private buildOptimizedPrompt(character: Character): string {
+  private buildOptimizedPrompt(character: DetailedCharacter): string {
     const { demographics, physicalAttributes, personality } = character;
     
     // Core physical description (most important for caricature)
@@ -113,7 +112,7 @@ export class ImageGenerator {
    * Can be used for variety or specific character types
    */
   async generateCharacterImageWithStyle(
-    character: Character, 
+    character: DetailedCharacter, 
     style: 'caricature' | 'anime' | 'realistic' | 'cartoon' = 'caricature'
   ): Promise<string> {
     const basePrompt = this.buildOptimizedPrompt(character);
@@ -143,7 +142,6 @@ export class ImageGenerator {
 
       return imageUrl;
     } catch (error) {
-      console.error('Error generating character image:', error);
       throw error;
     }
   }

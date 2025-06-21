@@ -1,5 +1,4 @@
-import CircusLogo from '@/components/CircusLogo'
-import CharacterScene from '@/components/CharacterScene'
+import { CharacterScene } from '@/components'
 
 export default function Home() {
   return (

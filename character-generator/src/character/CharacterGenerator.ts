@@ -1,12 +1,12 @@
-import { Character, Personality, Demographics, PhysicalAttributes, Background, Skills, Relationships } from './types';
+import { DetailedCharacter, Personality, Demographics, PhysicalAttributes, Background, Skills, Relationships } from '../types';
 import {
   firstNames, lastNames, personalityTypes, ethnicities, nationalities, occupations,
   educationLevels, socioeconomicStatuses, locations, physicalTraits, distinctiveFeatures,
   skills, lifeEvents, motivations, fears, dreams, secrets, quirks, catchphrases,
   goals, conflicts, characterArcs, gameRoles
-} from './constants/data';
+} from '../constants/data';
 import { DialogueGenerator } from './DialogueGenerator';
-import { S3Service } from './S3Service';
+import { S3Service } from '../services/S3Service';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -185,7 +185,7 @@ export class CharacterGenerator {
     return 'legendary';
   }
 
-  public generateCharacter(): Character {
+  public generateCharacter(): DetailedCharacter {
     return {
       id: this.generateId(),
       name: this.generateName(),
@@ -202,67 +202,51 @@ export class CharacterGenerator {
       characterArc: this.generateCharacterArc(),
       gameRole: this.generateGameRole(),
       difficulty: this.generateDifficulty(),
-      rarity: this.generateRarity()
+      rarity: this.generateRarity(),
+      imageUrl: undefined,
+      dialogueTree: undefined
     };
   }
 
-  // Utility function to sanitize filename
   private sanitizeFilename(name: string): string {
     return name
       .replace(/[^a-zA-Z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
       .replace(/\s+/g, ' ') // Replace multiple spaces with single space
       .trim()
-      .replace(/\s/g, '_'); // Replace spaces with underscores
+      .replace(/\s/g, '_') // Replace spaces with underscores
+      .toLowerCase(); // Convert to lowercase for consistency
   }
 
-  // Function to save character to file
-  public saveCharacterToFile(character: Character): string {
-    try {
-      // Create characters directory if it doesn't exist
-      const charactersDir = path.join(__dirname, '..', '..', 'characters');
-      if (!fs.existsSync(charactersDir)) {
-        fs.mkdirSync(charactersDir, { recursive: true });
-      }
-
-      // Sanitize character name for filename
-      const sanitizedName = this.sanitizeFilename(character.name);
-      const filename = `${sanitizedName}.json`;
-      const filepath = path.join(charactersDir, filename);
-
-      // Save character as JSON
-      fs.writeFileSync(filepath, JSON.stringify(character, null, 2), 'utf8');
-      return filepath;
-    } catch (error) {
-      throw new Error(`Error saving character to file: ${error}`);
+  public saveCharacterToFile(character: DetailedCharacter): string {
+    const sanitizedName = this.sanitizeFilename(character.name);
+    const filename = `${sanitizedName}_${Date.now()}.json`;
+    const filepath = path.join(process.cwd(), 'characters', filename);
+    
+    // Ensure characters directory exists
+    const charactersDir = path.dirname(filepath);
+    if (!fs.existsSync(charactersDir)) {
+      fs.mkdirSync(charactersDir, { recursive: true });
     }
+    
+    fs.writeFileSync(filepath, JSON.stringify(character, null, 2));
+    return filepath;
   }
 
-  // Function to save character to S3
-  public async saveCharacterToS3(character: Character): Promise<string> {
-    try {
-      console.log('💾 Saving character data to S3...');
-      const s3Url = await this.s3Service.saveCharacterData(character);
-      console.log(`✅ Character saved to S3: ${s3Url}`);
-      return s3Url;
-    } catch (error) {
-      throw new Error(`Error saving character to S3: ${error}`);
-    }
+  public async saveCharacterToS3(character: DetailedCharacter): Promise<string> {
+    const s3Url = await this.s3Service.saveCharacterData(character);
+    return s3Url;
   }
 
-  // Function to generate and save a single character with dialogue to S3
-  public async generateAndSaveCharacterWithDialogueToS3(): Promise<{ character: Character; s3Url: string }> {
+  public async generateAndSaveCharacterWithDialogueToS3(): Promise<{ character: DetailedCharacter; s3Url: string }> {
     const character = this.generateCharacter();
     const dialogueGenerator = new DialogueGenerator();
     const dialogueTree = await dialogueGenerator.generateDialogueTree(character);
-    
-    // Add dialogue tree to character
     character.dialogueTree = dialogueTree;
     
-    const s3Url = await this.saveCharacterToS3(character);
+    const s3Url = await this.s3Service.saveCharacterData(character);
     return { character, s3Url };
   }
 
-  // Function to generate and save a single character with dialogue
   public async generateAndSaveCharacterWithDialogue(): Promise<string> {
     const character = this.generateCharacter();
     const dialogueGenerator = new DialogueGenerator();

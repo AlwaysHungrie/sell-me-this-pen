@@ -108,7 +108,7 @@ export function calculateDialogueDifficulty(dialogue: DialogueTree): number {
  * @returns Statistics about the dialogue
  */
 export function getDialogueStats(dialogue: DialogueTree) {
-  let totalSteps = dialogue.steps.length
+  const totalSteps = dialogue.steps.length
   let totalOptions = 0
   let correctOptions = 0
   let mildlyWrongOptions = 0

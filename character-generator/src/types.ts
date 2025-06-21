@@ -1,3 +1,22 @@
+export interface S3CharacterData {
+  imageUrl?: string;
+  dialogueUrl?: string;
+  metadata?: {
+    name?: string;
+    createdAt?: string;
+    [key: string]: any;
+  };
+  [key: string]: any; // Allow for additional S3 URLs or data
+}
+
+export interface Character {
+  id: string;
+  s3Data: S3CharacterData;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Keep the original detailed types for internal use during generation
 export interface Personality {
   type: string;
   traits: string[];
@@ -59,7 +78,7 @@ export interface Relationships {
   rivals: string[];
 }
 
-export interface Character {
+export interface DetailedCharacter {
   id: string;
   name: string;
   personality: Personality;

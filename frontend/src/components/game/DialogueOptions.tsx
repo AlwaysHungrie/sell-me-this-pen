@@ -1,4 +1,4 @@
-import { DialogueOption } from './types'
+import { DialogueOption } from '../shared'
 
 interface DialogueOptionsProps {
   options: DialogueOption[]
@@ -22,7 +22,7 @@ export default function DialogueOptions({
             key={index}
             onClick={() => onOptionSelect(option)}
             disabled={isTyping}
-            className={`text-left p-4 rounded-lg transition-all duration-300 border bg-neutral-800 text-neutral-200 transform animate-in slide-in-from-bottom-4 fade-in duration-500 ${
+            className={`text-left p-4 rounded-lg transition-all duration-300 border bg-neutral-800 text-neutral-200 transform animate-in slide-in-from-bottom-4 fade-in ${
               isTyping 
                 ? 'opacity-50 cursor-not-allowed border-neutral-700' 
                 : 'hover:bg-neutral-700 hover:border-neutral-500 hover:text-neutral-100 hover:scale-[1.02] hover:shadow-lg border-neutral-600'

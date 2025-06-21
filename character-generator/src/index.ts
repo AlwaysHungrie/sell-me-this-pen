@@ -1,50 +1,137 @@
-import { CharacterGenerator } from './CharacterGenerator';
-import { ImageGenerator } from './ImageGenerator';
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { CharacterGenerator } from './character/CharacterGenerator';
+import { ImageGenerator } from './character/ImageGenerator';
+import { DialogueGenerator } from './character/DialogueGenerator';
+import { PrismaService } from './services/PrismaService';
+import { S3Service } from './services/S3Service';
+import { DetailedCharacter, S3CharacterData } from './types';
 
-// Create instances
-const generator = new CharacterGenerator();
-const imageGen = new ImageGenerator();
+// Load environment variables
+dotenv.config();
 
-async function main() {
+const app = express();
+const PORT = process.env.PORT || 3001;
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+
+// Middleware
+app.use(cors({
+  origin: FRONTEND_URL,
+}));
+app.use(express.json());
+
+// Initialize services
+const characterGenerator = new CharacterGenerator();
+const imageGenerator = new ImageGenerator();
+const prismaService = new PrismaService();
+const s3Service = new S3Service();
+
+// Connect to database
+prismaService.connect().catch(console.error);
+
+// Routes
+app.get('/api/characters/random', async (req, res) => {
   try {
-    console.log('🚀 Generating character with dialogue and image...');
+    const character = await prismaService.getRandomCharacter();
     
-    // Generate character with dialogue and save to S3
-    const { character, s3Url } = await generator.generateAndSaveCharacterWithDialogueToS3();
+    if (!character) {
+      return res.status(404).json({ 
+        error: 'No characters found in database. Create some characters first.' 
+      });
+    }
     
-    console.log(`✅ Character with dialogue saved to S3: ${s3Url}`);
+    // Return the S3 data which contains the URLs
+    res.json(character.s3Data);
+  } catch (error) {
+    console.error('Error getting random character:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/api/characters', async (req, res) => {
+  try {
+    // Generate character with dialogue
+    const generatedCharacter = characterGenerator.generateCharacter();
+    const detailedCharacter = generatedCharacter as unknown as DetailedCharacter;
+    const dialogueGenerator = new DialogueGenerator();
+    const dialogueTree = await dialogueGenerator.generateDialogueTree(detailedCharacter);
+    
+    // Add dialogue tree to character
+    detailedCharacter.dialogueTree = dialogueTree;
     
     // Generate image and add imageUrl to character
+    let imageUrl: string | undefined;
     try {
-      console.log('🎨 Generating character image...');
-      const imageUrl = await imageGen.generateCharacterImage(character);
-      character.imageUrl = imageUrl;
-      
-      // Save the updated character data (with image URL) back to S3
-      console.log('💾 Saving updated character data with image URL to S3...');
-      const updatedS3Url = await generator.saveCharacterToS3(character);
-      console.log(`✅ Updated character data saved to S3: ${updatedS3Url}`);
-      
+      imageUrl = await imageGenerator.generateCharacterImage(detailedCharacter);
+      detailedCharacter.imageUrl = imageUrl;
     } catch (err) {
-      console.warn('⚠️ Image generation failed:', err);
-      character.imageUrl = 'Image generation failed';
-      
-      // Still save the character data even if image generation failed
-      const updatedS3Url = await generator.saveCharacterToS3(character);
-      console.log(`✅ Character data saved to S3 (without image): ${updatedS3Url}`);
+      console.warn('Image generation failed:', err);
     }
     
-    console.log('🎉 Character generation completed successfully!');
-    console.log(`📊 Character: ${character.name}`);
-    console.log(`🔗 S3 URL: ${s3Url}`);
-    if (character.imageUrl && character.imageUrl !== 'Image generation failed') {
-      console.log(`🖼️ Image URL: ${character.imageUrl}`);
-    }
+    // Upload character data to S3
+    const characterDataUrl = await s3Service.saveCharacterData(detailedCharacter);
     
+    // Create S3 data object with URLs
+    const s3Data: S3CharacterData = {
+      imageUrl: imageUrl,
+      dialogueUrl: characterDataUrl,
+      metadata: {
+        name: detailedCharacter.name,
+        createdAt: new Date().toISOString(),
+        characterArc: detailedCharacter.characterArc,
+        gameRole: detailedCharacter.gameRole,
+        difficulty: detailedCharacter.difficulty,
+        rarity: detailedCharacter.rarity,
+      }
+    };
+    
+    // Save S3 data to database
+    const savedCharacter = await prismaService.saveCharacter(s3Data);
+    
+    res.status(201).json(savedCharacter.s3Data);
   } catch (error) {
-    console.error('❌ Error:', error);
-    process.exit(1);
+    console.error('Error creating character:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
-}
+});
 
-main(); 
+app.get('/api/characters/:id', async (req, res) => {
+  try {
+    const character = await prismaService.getCharacterById(req.params.id);
+    
+    if (!character) {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+    
+    // Return the S3 data which contains the URLs
+    res.json(character.s3Data);
+  } catch (error) {
+    console.error('Error getting character:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Character Generator API server running on port ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
+});
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('\nShutting down gracefully...');
+  await prismaService.disconnect();
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  console.log('\nShutting down gracefully...');
+  await prismaService.disconnect();
+  process.exit(0);
+}); 

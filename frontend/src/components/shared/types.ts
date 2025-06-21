@@ -1,3 +1,5 @@
+import { CharacterData } from "@/lib/api"
+
 // Types for the dialogue system
 export interface DialogueOption {
   text: string
@@ -33,4 +35,6 @@ export interface DialogueChatProps {
   characterImage: string
   onGameEnd?: (result: 'success' | 'failure') => void
   className?: string
+  characterData: CharacterData
+  onNewCharacter?: () => void
 } 

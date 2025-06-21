@@ -1,4 +1,4 @@
-import { Character, DialogueTree, DialogueStep, DialogueOption } from './types';
+import { DetailedCharacter, DialogueTree, DialogueStep, DialogueOption } from '../types';
 import * as fs from 'fs';
 import * as path from 'path';
 import OpenAI from 'openai';
@@ -99,9 +99,8 @@ IMPORTANT: Respond ONLY with valid JSON. No additional text or explanations.`;
   private log(message: string, data?: any) {
     const timestamp = new Date().toISOString();
     const logMessage = `[${timestamp}] ${message}`;
-    console.log(logMessage);
     if (data) {
-      console.log(JSON.stringify(data, null, 2));
+      // Data logging removed
     }
   }
 
@@ -110,7 +109,7 @@ IMPORTANT: Respond ONLY with valid JSON. No additional text or explanations.`;
     return Math.ceil(text.length / 4);
   }
 
-  private async callOpenAI(character: Character): Promise<string> {
+  private async callOpenAI(character: DetailedCharacter): Promise<string> {
     const focusedSummary = this.createFocusedCharacterSummary(character);
     const optionGuidance = this.getDialogueOptionGuidance(character);
     const userPrompt = `🔮 INPUT:
@@ -236,7 +235,7 @@ ${JSON.stringify(character, null, 2)}`;
     );
   }
 
-  public async generateDialogueTree(character: Character, maxRetries: number = 2): Promise<DialogueTree> {
+  public async generateDialogueTree(character: DetailedCharacter, maxRetries: number = 2): Promise<DialogueTree> {
     let attempts = 0;
     let lastError: string = '';
 
@@ -287,7 +286,7 @@ ${JSON.stringify(character, null, 2)}`;
     throw new Error('Unexpected error in dialogue generation');
   }
 
-  public async generateAndSaveDialogueTree(character: Character): Promise<string> {
+  public async generateAndSaveDialogueTree(character: DetailedCharacter): Promise<string> {
     try {
       this.log(`💾 Starting dialogue generation and save for ${character.name}`);
       
@@ -325,7 +324,7 @@ ${JSON.stringify(character, null, 2)}`;
   }
 
   // Create a focused character summary highlighting specific traits for dialogue
-  private createFocusedCharacterSummary(character: Character): string {
+  private createFocusedCharacterSummary(character: DetailedCharacter): string {
     const focusAreas = [
       'personality.traits',
       'personality.strengths', 
@@ -362,7 +361,7 @@ ${JSON.stringify(character, null, 2)}`;
     
     selectedFocus.forEach(area => {
       const [category, subcategory] = area.split('.');
-      const value = character[category as keyof Character];
+      const value = character[category as keyof DetailedCharacter];
       
       if (typeof value === 'object' && value !== null) {
         const subValue = (value as any)[subcategory];
@@ -391,7 +390,7 @@ ${JSON.stringify(character, null, 2)}`;
   }
 
   // Provide specific guidance for creating nuanced dialogue options
-  private getDialogueOptionGuidance(character: Character): string {
+  private getDialogueOptionGuidance(character: DetailedCharacter): string {
     const guidance = `
 🎯 DIALOGUE OPTION STRATEGY FOR ${character.name}:
 

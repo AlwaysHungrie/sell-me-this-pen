@@ -1,9 +1,6 @@
 'use client'
-import { useEffect, useState } from 'react'
 
 export default function CharacterScene() {
-  const [character, setCharacter] = useState(null)
-
   return (
     <div className="flex-1 w-full max-w-6xl mx-auto relative flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 px-4 py-8">
       {/* Text Content - Left Side */}

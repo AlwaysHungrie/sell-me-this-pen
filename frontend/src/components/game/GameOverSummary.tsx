@@ -3,13 +3,15 @@ interface GameOverSummaryProps {
   successEnding: string
   failureEnding: string
   onResetGame: () => void
+  onNewCharacter: () => void
 }
 
 export default function GameOverSummary({ 
   gameState, 
   successEnding, 
   failureEnding, 
-  onResetGame 
+  onResetGame,
+  onNewCharacter
 }: GameOverSummaryProps) {
   return (
     <div className="bg-neutral-800 rounded-lg p-4 border border-neutral-600 flex-shrink-0 animate-in slide-in-from-bottom-4 fade-in duration-500 relative">
@@ -40,7 +42,7 @@ export default function GameOverSummary({
             Try Again
           </button>
           <button
-            onClick={() => window.location.reload()}
+            onClick={onNewCharacter}
             className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-sm font-medium py-2 px-4 rounded transition-all duration-300 border border-neutral-600 hover:border-neutral-500 hover:scale-105"
           >
             New Character

@@ -1,5 +1,7 @@
+'use client'
+
 import { useRef, useEffect } from 'react'
-import { ChatMessage } from './types'
+import { ChatMessage } from '../shared'
 
 interface MessageListProps {
   messages: ChatMessage[]
