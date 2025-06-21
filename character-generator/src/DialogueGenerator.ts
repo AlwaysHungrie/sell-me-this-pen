@@ -20,65 +20,78 @@ export class DialogueGenerator {
 
   private readonly systemPrompt = `JSON Dialogue Tree System Prompt
 You are a branching narrative designer for a dialogue-based game. The player must sell a pen to a character by navigating a 5-step dialogue tree. The goal is to understand and adapt to the character's unique personality, communication style, and emotional needs.
-You will be given a detailed character persona. Based on this, generate a 5-step interactive dialogue with the specified JSON structure.
 
 🎭 YOUR TASK:
 
-Begin with a brief internal monologue or description of the character's emotional state when approached by someone trying to sell them a pen. Frame this in their voice or perspective.
-Construct a 5-step dialogue tree. At each step:
+IMPORTANT: Focus on SPECIFIC character traits, not generic personality types. Use concrete details from their background, skills, relationships, quirks, and life experiences.
+
+🔍 CHARACTER ANALYSIS APPROACH:
+- Pick 2-3 specific character traits to focus on (e.g., their childhood trauma, specific fears, unique skills, relationship issues, or distinctive quirks)
+- Use their exact communication style, decision-making patterns, and social preferences
+- Reference their specific life events, motivations, and secrets
+- Incorporate their actual catchphrases, goals, and conflicts
+
+Begin with a brief internal monologue that reflects the character's specific emotional state and background when approached by someone trying to sell them a pen.
+
+Construct a 5-step dialogue tree where each step focuses on different aspects of the character's unique persona:
 
 The player is presented with 3 dialogue options:
 
-✅ One correct option: resonates with the character's values and communication style, and brings the player closer to making the sale.
-❌ One mildly wrong option: tone-deaf or irrelevant.
-❌ One very wrong option: alienates or frustrates the character.
+✅ CORRECT option: Subtly resonates with the character's specific values, background, or communication style. Should NOT be obvious - it should feel like a natural, empathetic response that shows understanding of their unique situation.
 
-Follow each option with the character's reaction/response and a signal of whether the sale is progressing or regressing.
+❌ MILDLY WRONG option: Tone-deaf or misses the mark slightly. Could be too generic, ignores their specific background, or uses the wrong communication approach for their personality.
 
-Use the character's:
-Personality traits
-Communication style
-Pain points and motivations
-Social preferences and life experiences
-Fears, quirks, and goals
-to craft responses that feel authentic and emotionally reactive.
+❌ VERY WRONG option: Completely alienates the character by contradicting their core values, triggering their fears, or ignoring their specific life experiences.
 
-After the 5th step:
-If the player consistently picked correct responses: return a short "Sale Success" ending showing the character accepting the pen.
-If the player failed: return a "Sale Failed" ending where the character walks away or shuts down.
+🎯 DIALOGUE FOCUS AREAS (choose different ones for each step):
+- Step 1: Their current emotional state and immediate reaction
+- Step 2: Their background/life experiences and how it affects their perspective
+- Step 3: Their specific fears, motivations, or goals
+- Step 4: Their communication style and social preferences
+- Step 5: Their unique quirks, catchphrases, or distinctive personality traits
+
+💡 OPTION DESIGN PRINCIPLES:
+- Make the "correct" option subtle and character-specific, not obviously "salesy"
+- The correct option should feel like a natural, empathetic response that shows deep understanding of their unique situation
+- Wrong options should sound reasonable but miss subtle character-specific cues
+- Use the character's actual language patterns, catchphrases, and communication style
+- Reference their specific background, skills, relationships, or life events
+- Make wrong options feel plausible but miss the mark in character-specific ways
+- Avoid obvious "good vs bad" choices - all options should sound reasonable to someone who doesn't know the character well
+- The correct choice should require understanding of their specific fears, motivations, or life experiences
 
 🧾 REQUIRED JSON OUTPUT FORMAT:
 {
   "characterName": "Character Name",
-  "characterInternalMonologue": "Brief internal monologue in character's voice",
+  "characterInternalMonologue": "Brief internal monologue reflecting their specific background and current state",
   "steps": [
     {
       "stepNumber": 1,
-      "characterInternalMonologue": "Character's thoughts at this step",
+      "characterInternalMonologue": "Character's specific thoughts based on their unique traits",
       "options": [
         {
           "text": "Player dialogue option",
           "type": "correct",
-          "characterResponse": "Character's response",
+          "characterResponse": "Character's response using their specific communication style",
           "saleProgress": "progress"
         },
         {
           "text": "Player dialogue option",
           "type": "mildly_wrong",
-          "characterResponse": "Character's response",
+          "characterResponse": "Character's response showing slight disconnect",
           "saleProgress": "neutral"
         },
         {
           "text": "Player dialogue option",
           "type": "very_wrong",
-          "characterResponse": "Character's response",
+          "characterResponse": "Character's response showing major disconnect",
           "saleProgress": "regress"
         }
       ]
     }
   ],
-  "successEnding": "Brief success ending",
-  "failureEnding": "Brief failure ending"
+  "successEnding": "Brief success ending reflecting their specific personality",
+  "failureEnding": "Brief failure ending reflecting their specific personality"
 }
 
 IMPORTANT: Respond ONLY with valid JSON. No additional text or explanations.`;
@@ -98,9 +111,16 @@ IMPORTANT: Respond ONLY with valid JSON. No additional text or explanations.`;
   }
 
   private async callOpenAI(character: Character): Promise<string> {
+    const focusedSummary = this.createFocusedCharacterSummary(character);
+    const optionGuidance = this.getDialogueOptionGuidance(character);
     const userPrompt = `🔮 INPUT:
 Character Persona:
 
+${focusedSummary}
+
+${optionGuidance}
+
+FULL CHARACTER DATA (for reference):
 ${JSON.stringify(character, null, 2)}`;
 
     const fullPrompt = `${this.systemPrompt}\n\n${userPrompt}`;
@@ -302,5 +322,100 @@ ${JSON.stringify(character, null, 2)}`;
       .replace(/\s+/g, ' ')
       .trim()
       .replace(/\s/g, '_');
+  }
+
+  // Create a focused character summary highlighting specific traits for dialogue
+  private createFocusedCharacterSummary(character: Character): string {
+    const focusAreas = [
+      'personality.traits',
+      'personality.strengths', 
+      'personality.weaknesses',
+      'background.childhood',
+      'background.lifeEvents',
+      'background.motivations',
+      'background.fears',
+      'background.dreams',
+      'background.secrets',
+      'skills.primary',
+      'skills.hobbies',
+      'relationships.family',
+      'relationships.friends',
+      'relationships.enemies',
+      'quirks',
+      'catchphrases',
+      'goals',
+      'conflicts'
+    ];
+
+    // Randomly select 3-4 focus areas to emphasize
+    const shuffled = [...focusAreas].sort(() => 0.5 - Math.random());
+    const selectedFocus = shuffled.slice(0, Math.min(4, shuffled.length));
+
+    let summary = `🎭 CHARACTER FOCUS: ${character.name}\n\n`;
+    summary += `📋 BASIC INFO:\n`;
+    summary += `- Age: ${character.demographics.age}, ${character.demographics.occupation}\n`;
+    summary += `- Location: ${character.demographics.location}\n`;
+    summary += `- Communication Style: ${character.personality.communicationStyle}\n`;
+    summary += `- Social Preference: ${character.personality.socialPreference}\n\n`;
+
+    summary += `🎯 FOCUS TRAITS (use these for dialogue):\n`;
+    
+    selectedFocus.forEach(area => {
+      const [category, subcategory] = area.split('.');
+      const value = character[category as keyof Character];
+      
+      if (typeof value === 'object' && value !== null) {
+        const subValue = (value as any)[subcategory];
+        if (Array.isArray(subValue) && subValue.length > 0) {
+          summary += `- ${subcategory}: ${subValue.join(', ')}\n`;
+        } else if (typeof subValue === 'string') {
+          summary += `- ${subcategory}: ${subValue}\n`;
+        }
+      } else if (Array.isArray(value) && value.length > 0) {
+        summary += `- ${category}: ${value.join(', ')}\n`;
+      }
+    });
+
+    summary += `\n💬 DISTINCTIVE ELEMENTS:\n`;
+    if (character.catchphrases.length > 0) {
+      summary += `- Catchphrases: ${character.catchphrases.join(', ')}\n`;
+    }
+    if (character.quirks.length > 0) {
+      summary += `- Quirks: ${character.quirks.join(', ')}\n`;
+    }
+    if (character.background.secrets.length > 0) {
+      summary += `- Secrets: ${character.background.secrets.join(', ')}\n`;
+    }
+
+    return summary;
+  }
+
+  // Provide specific guidance for creating nuanced dialogue options
+  private getDialogueOptionGuidance(character: Character): string {
+    const guidance = `
+🎯 DIALOGUE OPTION STRATEGY FOR ${character.name}:
+
+CORRECT OPTIONS should:
+- Reference their specific background (${character.background.childhood}, ${character.background.lifeEvents.slice(0, 2).join(', ')})
+- Align with their communication style (${character.personality.communicationStyle})
+- Show understanding of their fears (${character.background.fears.slice(0, 2).join(', ')}) or goals (${character.goals.slice(0, 2).join(', ')})
+- Use language patterns that match their personality type (${character.personality.type})
+- Feel natural and empathetic, not salesy
+
+MILDLY WRONG OPTIONS should:
+- Be too generic or ignore their specific background
+- Use the wrong communication approach for their personality
+- Miss subtle cues about their social preferences (${character.personality.socialPreference})
+- Feel slightly tone-deaf to their unique situation
+
+VERY WRONG OPTIONS should:
+- Contradict their core values or trigger their fears
+- Ignore their specific life experiences or background
+- Use communication styles that clash with their personality
+- Feel completely disconnected from their unique character traits
+
+Remember: All options should sound reasonable, but only the correct one truly connects with ${character.name}'s specific persona.`;
+
+    return guidance;
   }
 } 
