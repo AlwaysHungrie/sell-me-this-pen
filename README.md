@@ -2,3 +2,6 @@
 
 ![Sell Me This Pen](readme-image.jpg)
 
+## License
+
+ISC 

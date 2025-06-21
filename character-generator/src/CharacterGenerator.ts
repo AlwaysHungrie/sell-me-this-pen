@@ -4,12 +4,19 @@ import {
   educationLevels, socioeconomicStatuses, locations, physicalTraits, distinctiveFeatures,
   skills, lifeEvents, motivations, fears, dreams, secrets, quirks, catchphrases,
   goals, conflicts, characterArcs, gameRoles
-} from './data';
+} from './constants/data';
 import { DialogueGenerator } from './DialogueGenerator';
+import { S3Service } from './S3Service';
 import * as fs from 'fs';
 import * as path from 'path';
 
 export class CharacterGenerator {
+  private s3Service: S3Service;
+
+  constructor() {
+    this.s3Service = new S3Service();
+  }
+
   private generateId(): string {
     return Math.random().toString(36).substr(2, 9);
   }
@@ -228,6 +235,31 @@ export class CharacterGenerator {
     } catch (error) {
       throw new Error(`Error saving character to file: ${error}`);
     }
+  }
+
+  // Function to save character to S3
+  public async saveCharacterToS3(character: Character): Promise<string> {
+    try {
+      console.log('💾 Saving character data to S3...');
+      const s3Url = await this.s3Service.saveCharacterData(character);
+      console.log(`✅ Character saved to S3: ${s3Url}`);
+      return s3Url;
+    } catch (error) {
+      throw new Error(`Error saving character to S3: ${error}`);
+    }
+  }
+
+  // Function to generate and save a single character with dialogue to S3
+  public async generateAndSaveCharacterWithDialogueToS3(): Promise<{ character: Character; s3Url: string }> {
+    const character = this.generateCharacter();
+    const dialogueGenerator = new DialogueGenerator();
+    const dialogueTree = await dialogueGenerator.generateDialogueTree(character);
+    
+    // Add dialogue tree to character
+    character.dialogueTree = dialogueTree;
+    
+    const s3Url = await this.saveCharacterToS3(character);
+    return { character, s3Url };
   }
 
   // Function to generate and save a single character with dialogue

@@ -7,17 +7,24 @@
     "build": "tsc",
     "dev": "ts-node src/index.ts",
     "generate": "ts-node src/index.ts",
-    "setup": "node setup-env.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["character", "generator", "game", "rpg", "personality", "demographics"],
+  "keywords": [
+    "character",
+    "generator",
+    "game",
+    "rpg",
+    "personality",
+    "demographics"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.832.0",
     "@types/node": "^20.0.0",
-    "ts-node": "^10.9.0",
-    "typescript": "^5.0.0",
+    "dotenv": "^16.0.0",
     "openai": "^4.0.0",
-    "dotenv": "^16.0.0"
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
   }
 }

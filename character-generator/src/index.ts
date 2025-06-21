@@ -7,29 +7,40 @@ const imageGen = new ImageGenerator();
 
 async function main() {
   try {
-    console.log('Generating character with dialogue and image...');
+    console.log('🚀 Generating character with dialogue and image...');
     
-    // Generate character with dialogue
-    const filepath = await generator.generateAndSaveCharacterWithDialogue();
+    // Generate character with dialogue and save to S3
+    const { character, s3Url } = await generator.generateAndSaveCharacterWithDialogueToS3();
     
-    // Read the character data to add image
-    const fs = require('fs');
-    const characterData = JSON.parse(fs.readFileSync(filepath, 'utf8'));
+    console.log(`✅ Character with dialogue saved to S3: ${s3Url}`);
     
-    // // Generate image and add imageUrl to character
-    // try {
-    //   console.log('Generating character image...');
-    //   const imageUrl = await imageGen.generateCharacterImage(characterData);
-    //   characterData.imageUrl = imageUrl;
-    // } catch (err) {
-    //   console.warn('Image generation failed:', err);
-    //   characterData.imageUrl = 'Image generation failed';
-    // }
+    // Generate image and add imageUrl to character
+    try {
+      console.log('🎨 Generating character image...');
+      const imageUrl = await imageGen.generateCharacterImage(character);
+      character.imageUrl = imageUrl;
+      
+      // Save the updated character data (with image URL) back to S3
+      console.log('💾 Saving updated character data with image URL to S3...');
+      const updatedS3Url = await generator.saveCharacterToS3(character);
+      console.log(`✅ Updated character data saved to S3: ${updatedS3Url}`);
+      
+    } catch (err) {
+      console.warn('⚠️ Image generation failed:', err);
+      character.imageUrl = 'Image generation failed';
+      
+      // Still save the character data even if image generation failed
+      const updatedS3Url = await generator.saveCharacterToS3(character);
+      console.log(`✅ Character data saved to S3 (without image): ${updatedS3Url}`);
+    }
     
-    // // Save the updated character data back to file
-    // fs.writeFileSync(filepath, JSON.stringify(characterData, null, 2), 'utf8');
+    console.log('🎉 Character generation completed successfully!');
+    console.log(`📊 Character: ${character.name}`);
+    console.log(`🔗 S3 URL: ${s3Url}`);
+    if (character.imageUrl && character.imageUrl !== 'Image generation failed') {
+      console.log(`🖼️ Image URL: ${character.imageUrl}`);
+    }
     
-    // console.log(`✅ Character with dialogue and image saved to: ${filepath}`);
   } catch (error) {
     console.error('❌ Error:', error);
     process.exit(1);

@@ -1,11 +1,13 @@
 import OpenAI from 'openai';
 import { Character } from './types';
+import { S3Service } from './S3Service';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 export class ImageGenerator {
   private openai: OpenAI;
+  private s3Service: S3Service;
 
   constructor() {
     const apiKey = process.env.OPENAI_API_KEY;
@@ -13,10 +15,11 @@ export class ImageGenerator {
       throw new Error('OPENAI_API_KEY environment variable is required');
     }
     this.openai = new OpenAI({ apiKey });
+    this.s3Service = new S3Service();
   }
 
   /**
-   * Generate a caricature image for a character
+   * Generate a caricature image for a character and upload to S3
    * Uses optimized prompts to minimize API usage while maintaining quality
    */
   async generateCharacterImage(character: Character): Promise<string> {
@@ -37,7 +40,9 @@ export class ImageGenerator {
         throw new Error('Failed to generate image URL');
       }
 
-      return imageUrl;
+      // Upload the image to S3 and return the S3 URL
+      const s3ImageUrl = await this.s3Service.uploadImage(imageUrl, character.name);
+      return s3ImageUrl;
     } catch (error) {
       console.error('Error generating character image:', error);
       throw error;
