@@ -34,14 +34,14 @@ export default function MessageList({
             }}
           >
             <div
-              className={`max-w-md px-4 py-3 rounded-lg transform transition-all duration-300 hover:scale-[1.02] ${
+              className={`transform transition-all duration-300 hover:scale-[1.02] relative ${
                 message.type === 'player'
-                  ? 'bg-neutral-700 text-neutral-100 border border-neutral-600 hover:border-neutral-500 hover:shadow-lg'
+                  ? 'max-w-[95%] md:max-w-md px-4 py-3 rounded-lg rounded-br-none bg-neutral-700 text-neutral-100 border border-neutral-600 hover:border-neutral-500 hover:shadow-lg'
                   : message.type === 'character'
-                  ? 'bg-neutral-600 text-neutral-100 border border-neutral-500 hover:border-neutral-400 hover:shadow-lg'
+                  ? 'max-w-[95%] md:max-w-md px-4 py-3 rounded-lg rounded-bl-none bg-neutral-600 text-neutral-100 border border-neutral-500 hover:border-neutral-400 hover:shadow-lg'
                   : message.type === 'internal'
-                  ? 'bg-neutral-700/60 text-neutral-300 border border-neutral-600/50 hover:border-neutral-500/50 hover:shadow-lg backdrop-blur-sm'
-                  : 'bg-neutral-700 text-neutral-100 border border-neutral-600 hover:border-neutral-500 hover:shadow-lg'
+                  ? 'px-4 py-2 text-sm bg-neutral-700/60 text-neutral-300 border border-neutral-600/50 hover:border-neutral-500/50 hover:shadow-lg backdrop-blur-sm'
+                  : 'px-4 py-2 text-sm bg-neutral-700 text-neutral-100 border border-neutral-600 hover:border-neutral-500 hover:shadow-lg'
               }`}
             >
               <p className={`text-sm leading-relaxed ${message.type === 'internal' ? 'italic' : ''}`}>

@@ -66,7 +66,7 @@ app.post('/api/characters', async (req, res) => {
 
     const transactionService = new TransactionService();
     const result = await transactionService.analyzeTransaction(transactionHash);
-    console.log('Result:', result);
+    
     if (!result.isValid) {
       return res.status(400).json({ error: result.error });
     }
@@ -76,11 +76,6 @@ app.post('/api/characters', async (req, res) => {
       return res.status(200).json({ message: 'Invalid transaction' });
     }
 
-    // return res.status(200).json({ message: 'Transaction valid' });
-    
-    // TODO: Add transaction verification logic here
-    console.log('Creating character with transaction hash:', transactionHash);
-    
     // Generate character with dialogue
     const generatedCharacter = characterGenerator.generateCharacter();
     const detailedCharacter = generatedCharacter as unknown as DetailedCharacter;
@@ -123,7 +118,6 @@ app.post('/api/characters', async (req, res) => {
 
     res.status(201).json(savedCharacter.s3Data);
   } catch (error) {
-    console.error('Error creating character:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

@@ -23,7 +23,10 @@ export const checkTransaction = async (transactionInfo: TransactionInfo) => {
     requiredAddress = process.env.SOLANA_ADDRESS
   }
 
-  if (transactionInfo.receiverAddress === requiredAddress) {
+  if (
+    transactionInfo?.receiverAddress?.toLowerCase() ===
+    requiredAddress?.toLowerCase()
+  ) {
     checkAddress = true
   }
 

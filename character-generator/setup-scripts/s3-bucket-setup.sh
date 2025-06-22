@@ -3,6 +3,7 @@
 # S3 Bucket Setup Script for Character Generator
 # This script creates an S3 bucket for storing character images and JSON data
 # with proper permissions: public read, restricted write access
+# TODO: add cors rules
 
 set -e  # Exit on any error
 
