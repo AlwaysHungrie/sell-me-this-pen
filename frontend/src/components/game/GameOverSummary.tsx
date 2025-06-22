@@ -150,7 +150,7 @@ https://game.constella.one`
             onClick={copyImageToClipboard}
             className="bg-black/10 hover:bg-neutral-900 text-white text-sm font-medium py-1 px-4 rounded transition-all duration-300 border border-neutral-700 hover:border-neutral-600 hover:scale-105 flex items-center gap-2"
           >
-            Share on
+            Share <span className="hidden lg:inline">on</span>
             <img src="/x.svg" alt="X" className="w-6 h-6" />
           </button>
           <button

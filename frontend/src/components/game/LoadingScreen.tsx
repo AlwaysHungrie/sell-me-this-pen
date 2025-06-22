@@ -41,12 +41,12 @@ export default function LoadingScreen({
   return (
     <ChatLayout className={className}>
       {/* Main Content */}
-      <div className="flex-1 flex max-w-6xl mx-auto w-full p-4 gap-6 overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row max-w-6xl mx-auto w-full p-4 gap-6 overflow-y-auto lg:overflow-hidden">
         {/* Left Panel - Blinking Character Placeholder */}
-        <div className="hidden lg:flex flex-col items-center justify-center w-72 flex-shrink-0">
+        <div className="flex flex-col items-center justify-center w-full lg:w-72 flex-shrink-0 mb-6 lg:mb-0">
           <div className="relative">
             {/* Character Portrait Placeholder */}
-            <div className="relative w-56 h-56 bg-neutral-800 rounded-lg p-1 border border-neutral-600">
+            <div className="relative w-48 h-48 lg:w-56 lg:h-56 bg-neutral-800 rounded-lg p-1 border border-neutral-600">
               <div className="w-full h-full bg-neutral-700 rounded animate-pulse"></div>
             </div>
 

@@ -88,10 +88,10 @@ export default function CharacterPanel({
   }
 
   return (
-    <div className="flex flex-col items-center w-80 flex-shrink-0 mt-4">
+    <div className="flex flex-col items-center w-full lg:w-80 flex-shrink-0 mt-4">
       <div className="relative">
         {/* Character Portrait */}
-        <div className="relative w-64 h-64 bg-neutral-800 rounded-xl p-2 border-2 border-neutral-600 shadow-lg">
+        <div className="relative w-48 h-48 lg:w-64 lg:h-64 bg-neutral-800 rounded-xl p-2 border-2 border-neutral-600 shadow-lg">
           <div className="w-full h-full bg-neutral-900 rounded-lg overflow-hidden">
             <Image
               src={characterImage}
@@ -104,19 +104,19 @@ export default function CharacterPanel({
         </div>
 
         {/* Character Name */}
-        <div className="text-center absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-neutral-800 text-neutral-100 px-6 py-3 rounded-lg border-2 border-neutral-600 text-base font-semibold shadow-lg">
+        <div className="text-center absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-neutral-800 text-neutral-100 px-4 lg:px-6 py-2 lg:py-3 rounded-lg border-2 border-neutral-600 text-sm lg:text-base font-semibold shadow-lg">
           {characterName}
         </div>
       </div>
 
       {/* Character Data */}
       <div className="mt-8 w-full bg-neutral-800 rounded-xl border-2 border-neutral-600 shadow-lg">
-        <h3 className="text-neutral-200 font-semibold mb-4 text-center text-base py-4 border-b border-neutral-700">
+        <h3 className="text-neutral-200 font-semibold mb-4 text-center text-sm lg:text-base py-3 lg:py-4 border-b border-neutral-700">
           Character Data
         </h3>
         
         {/* Current Section */}
-        <div className="max-h-[120px] overflow-y-auto px-6 py-4">
+        <div className="max-h-[100px] lg:max-h-[120px] overflow-y-auto px-4 lg:px-6 py-3 lg:py-4">
           {dataSections[currentPage] && (
             <div>
               <h4 className="text-neutral-300 font-bold mb-4 text-sm uppercase tracking-wider border-b border-neutral-700 pb-2">

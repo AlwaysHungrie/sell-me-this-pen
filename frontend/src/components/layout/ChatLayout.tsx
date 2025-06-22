@@ -10,7 +10,7 @@ export default function ChatLayout({
 }) {
   return (
     <div
-      className={`h-screen bg-neutral-900 relative overflow-hidden ${className}`}
+      className={`h-screen bg-neutral-900 relative overflow-y-auto lg:overflow-hidden ${className}`}
     >
       {/* Subtle texture overlay */}
       <div className="absolute inset-0 opacity-5">
@@ -22,7 +22,7 @@ export default function ChatLayout({
         ></div>
       </div>
 
-      <div className="relative z-10 flex flex-col h-full">
+      <div className="relative z-10 flex flex-col min-h-screen lg:h-full">
         {/* Header */}
         <DialogueHeader />
 

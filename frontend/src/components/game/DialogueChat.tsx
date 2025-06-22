@@ -213,7 +213,7 @@ export default function DialogueChat({
         }}
       />
       {/* Main Interface */}
-      <div className="flex-1 flex max-w-6xl mx-auto w-full p-4 gap-6 overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row max-w-6xl mx-auto w-full p-4 gap-6 overflow-y-auto lg:overflow-hidden">
         {/* Character Panel */}
         <CharacterPanel
           characterName={dialogueTree.characterName}
@@ -223,7 +223,7 @@ export default function DialogueChat({
         />
 
         {/* Dialogue Panel */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-h-0">
           {/* Messages Area */}
           <MessageList
             messages={messages}
