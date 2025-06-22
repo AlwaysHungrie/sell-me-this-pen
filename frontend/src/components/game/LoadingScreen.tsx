@@ -76,7 +76,7 @@ export default function LoadingScreen({
 
               {/* Main Message */}
               <h2 className="text-2xl font-semibold text-neutral-100 mb-8">
-                Sit tight, finding a random person from the streets
+                Sit tight, we're getting a random person from the streets.
               </h2>
 
               {/* Completion Message - Removed to eliminate green flash */}

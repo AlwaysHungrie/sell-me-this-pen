@@ -295,4 +295,77 @@ export const gameRoles = [
   'Villain', 'Anti-Villain', 'Anti-Hero', 'Tragic Hero', 'Foil Character',
   'Catalyst', 'Guardian', 'Herald', 'Threshold Guardian', 'Shapeshifter',
   'Shadow', 'Trickster', 'Allies', 'Enemies', 'Neutral Party'
-]; 
+];
+
+// Blockchain configuration interface
+export interface BlockchainConfig {
+  name: string;
+  rpcUrl: string;
+  usdcContract: string;
+  usdcDecimals: number;
+  chainId?: number;
+  explorerUrl?: string;
+}
+
+// Supported EVM L2s configuration
+export const EVM_L2_CONFIGS: Record<string, BlockchainConfig> = {
+  base: {
+    name: 'Base',
+    rpcUrl: 'https://mainnet.base.org',
+    usdcContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    usdcDecimals: 6,
+    chainId: 8453,
+    explorerUrl: 'https://basescan.org'
+  },
+  scroll: {
+    name: 'Scroll',
+    rpcUrl: 'https://rpc.scroll.io',
+    usdcContract: '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4',
+    usdcDecimals: 6,
+    chainId: 534352,
+    explorerUrl: 'https://scrollscan.com'
+  }
+  // Easy to add more L2s:
+  // polygon: {
+  //   name: 'Polygon',
+  //   rpcUrl: 'https://polygon-rpc.com',
+  //   usdcContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+  //   usdcDecimals: 6,
+  //   chainId: 137,
+  //   explorerUrl: 'https://polygonscan.com'
+  // }
+} as const;
+
+// Solana configuration
+export const SOLANA_CONFIG: BlockchainConfig = {
+  name: 'Solana',
+  rpcUrl: 'https://api.mainnet-beta.solana.com',
+  usdcContract: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC mint address
+  usdcDecimals: 6,
+  explorerUrl: 'https://solscan.io'
+};
+
+// Legacy exports for backward compatibility (deprecated)
+export const USDC_CONTRACTS = Object.fromEntries(
+  Object.entries(EVM_L2_CONFIGS).map(([key, config]) => [key, config.usdcContract])
+) as Record<string, string>;
+
+export const RPC_URLS = Object.fromEntries(
+  Object.entries(EVM_L2_CONFIGS).map(([key, config]) => [key, config.rpcUrl])
+) as Record<string, string>;
+
+export const USDC_DECIMALS = Object.fromEntries(
+  Object.entries(EVM_L2_CONFIGS).map(([key, config]) => [key, config.usdcDecimals])
+) as Record<string, number>;
+
+// Helper functions for easy L2 management
+export const getSupportedEVMChains = (): string[] => Object.keys(EVM_L2_CONFIGS);
+
+export const getBlockchainConfig = (chain: string): BlockchainConfig | null => {
+  if (chain === 'solana') return SOLANA_CONFIG;
+  return EVM_L2_CONFIGS[chain] || null;
+};
+
+export const addEVMChain = (chainKey: string, config: BlockchainConfig): void => {
+  (EVM_L2_CONFIGS as any)[chainKey] = config;
+}; 

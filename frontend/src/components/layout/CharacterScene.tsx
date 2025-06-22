@@ -22,13 +22,14 @@ export default function CharacterScene() {
           </p>
 
           {/* Call to Action Button */}
-          <div className="pt-4">
+          <div className="pt-4 flex gap-4 items-center">
             <a
               href="/chat"
               className="bg-black hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               Start Selling
             </a>
+            <div className="text-lg text-gray-500">(Free to play)</div>
           </div>
         </div>
       </div>

@@ -43,13 +43,24 @@ export default function AgentPage() {
     // You can add additional logic here, like analytics or navigation
   }
 
-  const handleNewCharacter = async () => {
+  const handleNewCharacter = async (newCharacterData?: { character: any; dialogue: any }) => {
     try {
       setLoading(true)
       setError(null)
       setShowGame(false)
       
-      const { character, dialogue } = await characterAPI.getFullCharacterData()
+      let character, dialogue
+      
+      if (newCharacterData) {
+        // Use the newly created character data
+        character = newCharacterData.character
+        dialogue = newCharacterData.dialogue
+      } else {
+        // Fetch a random character (fallback)
+        const result = await characterAPI.getFullCharacterData()
+        character = result.character
+        dialogue = result.dialogue
+      }
       
       setDialogueTree(dialogue.dialogueTree)
       setCharacterImage(character.imageUrl)

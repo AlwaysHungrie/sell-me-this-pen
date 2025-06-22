@@ -36,5 +36,5 @@ export interface DialogueChatProps {
   onGameEnd?: (result: 'success' | 'failure') => void
   className?: string
   characterData: CharacterData
-  onNewCharacter?: () => void
+  onNewCharacter?: (newCharacterData?: { character: any; dialogue: any }) => void
 } 

@@ -7,6 +7,8 @@ import { DialogueGenerator } from './character/DialogueGenerator';
 import { PrismaService } from './services/PrismaService';
 import { S3Service } from './services/S3Service';
 import { DetailedCharacter, S3CharacterData } from './types';
+import { TransactionService } from './services/TransactionService';
+import { checkTransaction } from './services/checkTransaction';
 
 // Load environment variables
 dotenv.config();
@@ -51,6 +53,34 @@ app.get('/api/characters/random', async (req, res) => {
 
 app.post('/api/characters', async (req, res) => {
   try {
+    const { transactionHash } = req.body;
+    
+    if (!transactionHash) {
+      return res.status(400).json({ error: 'Transaction hash is required' });
+    }
+
+    const checkTx = await prismaService.getTransactionByHash(transactionHash);
+    if (checkTx) {
+      return res.status(200).json({ message: 'Transaction already used' });
+    }
+
+    const transactionService = new TransactionService();
+    const result = await transactionService.analyzeTransaction(transactionHash);
+    console.log('Result:', result);
+    if (!result.isValid) {
+      return res.status(400).json({ error: result.error });
+    }
+
+    const isTransactionValid = await checkTransaction(result);
+    if (!isTransactionValid) {
+      return res.status(200).json({ message: 'Invalid transaction' });
+    }
+
+    // return res.status(200).json({ message: 'Transaction valid' });
+    
+    // TODO: Add transaction verification logic here
+    console.log('Creating character with transaction hash:', transactionHash);
+    
     // Generate character with dialogue
     const generatedCharacter = characterGenerator.generateCharacter();
     const detailedCharacter = generatedCharacter as unknown as DetailedCharacter;
@@ -88,7 +118,9 @@ app.post('/api/characters', async (req, res) => {
     
     // Save S3 data to database
     const savedCharacter = await prismaService.saveCharacter(s3Data);
-    
+
+    await prismaService.saveTransaction(transactionHash);
+
     res.status(201).json(savedCharacter.s3Data);
   } catch (error) {
     console.error('Error creating character:', error);

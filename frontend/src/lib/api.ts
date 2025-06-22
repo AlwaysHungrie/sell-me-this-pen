@@ -124,6 +124,32 @@ class CharacterAPI {
       throw new Error('Failed to fetch full character data')
     }
   }
+
+  async createCharacter(transactionHash: string): Promise<CharacterResponse> {
+    try {
+      const response = await this.api.post<CharacterResponse>('/characters', {
+        transactionHash
+      }, {
+        timeout: 300000
+      })
+      
+      // Check if the response contains an error message
+      if (response.data && typeof response.data === 'object' && 'message' in response.data) {
+        const errorMessage = (response.data as any).message
+        if (errorMessage && errorMessage !== 'Character created successfully') {
+          throw new Error(errorMessage)
+        }
+      }
+      
+      return response.data
+    } catch (error) {
+      console.error('Error creating character:', error)
+      if (error instanceof Error) {
+        throw error
+      }
+      throw new Error('Failed to create character')
+    }
+  }
 }
 
 export const characterAPI = new CharacterAPI() 

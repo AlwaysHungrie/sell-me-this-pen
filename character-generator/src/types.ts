@@ -119,3 +119,10 @@ export interface DialogueTree {
   successEnding: string;
   failureEnding: string;
 } 
+
+export interface Transaction {
+  id: string;
+  transactionHash: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
