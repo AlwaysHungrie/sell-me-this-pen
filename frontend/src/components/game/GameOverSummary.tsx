@@ -1,6 +1,7 @@
 'use client'
 
 import { toast } from 'sonner'
+import Image from 'next/image'
 
 interface GameOverSummaryProps {
   gameState: 'success' | 'failure'
@@ -37,7 +38,7 @@ export default function GameOverSummary({
       // Create a canvas to convert the image
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
-      const img = new Image()
+      const img = new window.Image()
 
       img.onload = () => {
         canvas.width = img.width
@@ -54,7 +55,7 @@ export default function GameOverSummary({
               <CustomToast>
                 <div>
                   <div className="font-medium">
-                    {characterName}'s photo copied to clipboard
+                    {characterName}&apos;s photo copied to clipboard
                   </div>
                 </div>
               </CustomToast>,
@@ -151,7 +152,7 @@ https://game.constella.one`
             className="bg-black/10 hover:bg-neutral-900 text-white text-sm font-medium py-1 px-4 rounded transition-all duration-300 border border-neutral-700 hover:border-neutral-600 hover:scale-105 flex items-center gap-2"
           >
             Share <span className="hidden lg:inline">on</span>
-            <img src="/x.svg" alt="X" className="w-6 h-6" />
+            <Image src="/x.svg" alt="X" width={24} height={24} />
           </button>
           <button
             onClick={onNewCharacter}

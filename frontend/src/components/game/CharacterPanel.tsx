@@ -11,16 +11,22 @@ interface CharacterPanelProps {
   characterData: CharacterData
 }
 
+interface DataSection {
+  key: string
+  title: string
+  data: Record<string, unknown> | string[]
+}
+
 export default function CharacterPanel({
   characterName,
   characterImage,
   progressScore,
   characterData,
 }: CharacterPanelProps) {
-  const { demographics, physicalAttributes, personality, background, skills, relationships, quirks, goals, conflicts } = characterData
+  const { demographics, physicalAttributes, background, relationships, goals, conflicts } = characterData
   
   // Define the data sections to display
-  const dataSections = [
+  const dataSections: DataSection[] = [
     { 
       key: 'status', 
       title: 'Status', 
@@ -40,7 +46,7 @@ export default function CharacterPanel({
 
   const [currentPage, setCurrentPage] = useState(0)
 
-  const renderDataSection = (section: any) => {
+  const renderDataSection = (section: DataSection) => {
     if (!section.data) return null
 
     return (

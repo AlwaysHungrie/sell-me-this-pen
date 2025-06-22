@@ -1,11 +1,32 @@
-import { DialogueTree } from '@/components/types'
+import { DialogueTree } from '@/components/shared/types'
+
+interface DialogueData {
+  characterName: string
+  characterInternalMonologue?: string
+  steps: DialogueStepData[]
+  successEnding?: string
+  failureEnding?: string
+}
+
+interface DialogueStepData {
+  stepNumber?: number
+  characterInternalMonologue?: string
+  options?: DialogueOptionData[]
+}
+
+interface DialogueOptionData {
+  text?: string
+  type?: string
+  characterResponse?: string
+  saleProgress?: string
+}
 
 /**
  * Load a dialogue tree from a JSON file or API response
  * @param dialogueData - The dialogue tree data
  * @returns A properly typed DialogueTree object
  */
-export function loadDialogueTree(dialogueData: any): DialogueTree {
+export function loadDialogueTree(dialogueData: DialogueData): DialogueTree {
   // Validate the structure
   if (!dialogueData.characterName || !dialogueData.steps || !Array.isArray(dialogueData.steps)) {
     throw new Error('Invalid dialogue tree structure')
@@ -14,14 +35,14 @@ export function loadDialogueTree(dialogueData: any): DialogueTree {
   return {
     characterName: dialogueData.characterName,
     characterInternalMonologue: dialogueData.characterInternalMonologue || '',
-    steps: dialogueData.steps.map((step: any, index: number) => ({
+    steps: dialogueData.steps.map((step: DialogueStepData, index: number) => ({
       stepNumber: step.stepNumber || index + 1,
       characterInternalMonologue: step.characterInternalMonologue || '',
-      options: step.options?.map((option: any) => ({
+      options: step.options?.map((option: DialogueOptionData) => ({
         text: option.text || '',
-        type: option.type || 'mildly_wrong',
+        type: (option.type as 'correct' | 'mildly_wrong' | 'very_wrong') || 'mildly_wrong',
         characterResponse: option.characterResponse || '',
-        saleProgress: option.saleProgress || 'neutral'
+        saleProgress: (option.saleProgress as 'progress' | 'neutral' | 'regress') || 'neutral'
       })) || []
     })),
     successEnding: dialogueData.successEnding || 'Success!',
@@ -48,7 +69,7 @@ export function getRandomDialogue(dialogues: DialogueTree[]): DialogueTree {
  * @param dialogue - The dialogue tree to validate
  * @returns True if valid, throws error if invalid
  */
-export function validateDialogueTree(dialogue: any): boolean {
+export function validateDialogueTree(dialogue: DialogueData): boolean {
   if (!dialogue.characterName) {
     throw new Error('Dialogue tree must have a characterName')
   }

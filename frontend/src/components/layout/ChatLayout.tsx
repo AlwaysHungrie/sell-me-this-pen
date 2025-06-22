@@ -1,5 +1,4 @@
 import { DialogueHeader } from '../game'
-import { DialogueTree } from '../shared'
 
 export default function ChatLayout({
   className,

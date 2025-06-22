@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { DialogueChat, DialogueTree, LoadingScreen } from '@/components'
-import { characterAPI, CharacterData } from '@/lib/api'
+import { characterAPI, CharacterData, CharacterResponse } from '@/lib/api'
 
 export default function AgentPage() {
   const [dialogueTree, setDialogueTree] = useState<DialogueTree | null>(null)
@@ -43,7 +43,7 @@ export default function AgentPage() {
     // You can add additional logic here, like analytics or navigation
   }
 
-  const handleNewCharacter = async (newCharacterData?: { character: any; dialogue: any }) => {
+  const handleNewCharacter = async (newCharacterData?: { character: CharacterResponse; dialogue: CharacterData }) => {
     try {
       setLoading(true)
       setError(null)

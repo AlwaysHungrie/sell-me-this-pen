@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { toast } from 'sonner'
-import { characterAPI } from '@/lib/api'
+import { characterAPI, CharacterResponse } from '@/lib/api'
 
 interface NewCharacterModalProps {
   onClose: () => void
-  onCharacterCreated?: (characterData: any) => void
+  onCharacterCreated?: (characterData: CharacterResponse) => void
   // TODO: Add a prop to handle character generation on successful transaction verification
   // onNewCharacter: (address: string) => void
 }
@@ -110,7 +110,7 @@ export default function NewCharacterModal({ onClose, onCharacterCreated }: NewCh
             Create a New Character
           </h2>
           <p className="text-neutral-400 text-sm mb-6">
-            We're glad you're having fun! To generate a completely new
+            We&apos;re glad you&apos;re having fun! To generate a completely new
             character, please send <span className="font-bold text-white">3 USDC</span> on either Base, Scroll, or Solana to the
             corresponding address below.
           </p>

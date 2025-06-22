@@ -14,7 +14,7 @@ import DialogueOptions from './DialogueOptions'
 import GameOverSummary from './GameOverSummary'
 import ChatLayout from '../layout/ChatLayout'
 import NewCharacterModal from './NewCharacterModal'
-import { characterAPI } from '@/lib/api'
+import { characterAPI, CharacterResponse } from '@/lib/api'
 
 export default function DialogueChat({
   dialogueTree,
@@ -177,7 +177,7 @@ export default function DialogueChat({
       : `*${dialogueTree.characterName} appears before you, looking skeptical.*`
   }
 
-  const handleNewCharacterCreated = async (characterResponse: any) => {
+  const handleNewCharacterCreated = async (characterResponse: CharacterResponse) => {
     try {
       // Load the full character data using the dialogue URL from the response
       const dialogue = await characterAPI.getCharacterDialogue(characterResponse.dialogueUrl)

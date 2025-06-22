@@ -135,7 +135,7 @@ class CharacterAPI {
       
       // Check if the response contains an error message
       if (response.data && typeof response.data === 'object' && 'message' in response.data) {
-        const errorMessage = (response.data as any).message
+        const errorMessage = (response.data as { message: string }).message
         if (errorMessage && errorMessage !== 'Character created successfully') {
           throw new Error(errorMessage)
         }

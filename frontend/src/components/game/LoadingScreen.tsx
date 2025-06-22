@@ -13,7 +13,6 @@ export default function LoadingScreen({
   className = '',
 }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0)
-  const [loadingComplete, setLoadingComplete] = useState(false)
 
   useEffect(() => {
     const totalDuration = 5000 // 5 seconds
@@ -25,7 +24,6 @@ export default function LoadingScreen({
         const newProgress = prev + increment
         if (newProgress >= 100) {
           clearInterval(timer)
-          setLoadingComplete(true)
           setTimeout(() => {
             onLoadingComplete()
           }, 800) // Small delay before calling onLoadingComplete
@@ -76,7 +74,7 @@ export default function LoadingScreen({
 
               {/* Main Message */}
               <h2 className="text-2xl font-semibold text-neutral-100 mb-8">
-                Sit tight, we're getting a random person from the streets.
+                Sit tight, we&apos;re getting a random person from the streets.
               </h2>
 
               {/* Completion Message - Removed to eliminate green flash */}
